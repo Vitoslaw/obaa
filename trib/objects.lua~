@@ -1,0 +1,57 @@
+object = {}
+object.__index = object
+
+static = {}
+static.__index = static
+
+pose = {}
+pose.__index = pose
+
+function pose.new()
+	setmetatable({
+		takeDamage = {},
+		dealDamage = {},
+		ocupy = {},
+		duration = 0,
+		begin = 0
+		},pose)
+end
+
+function object.new(x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
+	return setmetatable({
+		x = x, y = y, image = 0,
+		xSpeed = 0, ySpeed = 0, mass = 0, forces = physicModule,
+		events = eventSchemes[eventScheme], eventCheck = eventSchemes[eventScheme].check,
+		keybind = keybindSchemes[keybindScheme], inputPressKey = keybindSchemes[keybindScheme].onPress, inputReleaseKey = keybindSchemes[keybindScheme].onRelease,
+		AI = AISchemes[AIScheme], AICheck = AISchemes[AIScheme].check,
+		poses = graphicsSchemes[graphicScheme], pose = {}
+		material = {fire = 0, air = 0, earth = 0, water = 0, soul = 0},
+		obstacle = isObstacle,
+		extra = extra
+		},object)
+end
+
+function static.new(x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
+	return setmetatable({
+		x = x, y = y, image = 0,
+		events = eventScheme,
+		keybind = keybindScheme,
+		AI = AIScheme,
+		material = {fire = 0, air = 0, earth = 0, water = 0, soul = 0},
+		obstacle = isObstacle,
+		poses = graphicsScheme,
+		extra = extra
+		},static)
+end
+
+function object:physics(elapsed)
+	local n = 300	
+	for i = 0, n do 
+		self.x = self.x + self.xSpeed/n
+		self.y = self.y + self.ySpeed/n
+
+		UpdatePhysics(self,elapsed)
+	end
+end
+
+

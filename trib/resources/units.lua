@@ -1,0 +1,1 @@
+--player = object.new("generic","generic",nil,)
