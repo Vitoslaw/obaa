@@ -18,7 +18,7 @@ function pose.new(image,occupy,take,deal)
 		},pose)
 end
 
-function StaticProperties(physic, x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
+function StaticProperties(physic, x, y, color, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
 	
 	if physic then
 		xSpeed = 0
@@ -54,7 +54,7 @@ function StaticProperties(physic, x, y, eventScheme, keybindScheme, AIScheme, gr
 
 	
 	local tab = {
-		x = x, y = y,
+		x = x, y = y, color = color,
 		xSpeed = xSpeed, ySpeed = ySpeed, mass = mass, forces = forces,
 		events = eventSchemes[eventScheme], eventCheck = eventCheck,
 		keybind = keybindSchemes[keybindScheme], inputPressCheck = inputPressCheck, inputReleaseCheck = inputReleaseCheck,
@@ -67,12 +67,12 @@ function StaticProperties(physic, x, y, eventScheme, keybindScheme, AIScheme, gr
 	return tab
 end
 
-function object.new(x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
-	return setmetatable(StaticProperties(true, x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra),object)
+function object.new(x, y, color, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
+	return setmetatable(StaticProperties(true, x, y, color, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra),object)
 end
 
-function static.new(x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
-	return setmetatable(StaticProperties(false, x, y, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra),static)
+function static.new(x, y, color, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra)
+	return setmetatable(StaticProperties(false, x, y, color, eventScheme, keybindScheme, AIScheme, graphicScheme, isObstacle, extra),static)
 end
 
 

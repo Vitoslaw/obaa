@@ -12,9 +12,9 @@ function LoadScenes()
 	arenaConf = scene.new()
 	arena = scene.new()
 
-	startMenu.objects, startMenu.statics = dofile("trib/scenes/menuStart.lua")
-	choseMode.objects, choseMode.statics = dofile("trib/scenes/menuChose.lua")
-	arenaConf.objects, arenaConf.statics = dofile("trib/scenes/menuArena.lua")
+	startMenu.objects, startMenu.statics = dofile(installLocation.."/scenes/menuStart.lua")
+	choseMode.objects, choseMode.statics = dofile(installLocation.."/scenes/menuChose.lua")
+	arenaConf.objects, arenaConf.statics = dofile(installLocation.."/scenes/menuArena.lua")
 
 	activeScene = startMenu
 end
@@ -56,7 +56,7 @@ function scene:onKeyRelease(key)
 	for dumb,tab in pairs(self) do 
 		for m,layer in pairs(tab) do
 			for k,v	in pairs(layer) do
-				if v.inputReleaseCheck(key) then
+				if v.inputReleaseCheck then
 					v:inputReleaseCheck(key)
 				end
 			end
@@ -92,6 +92,12 @@ function scene:draw()
 	for dumb,tab in pairs(self) do
 		for m,layer in pairs(tab) do
 			for k,v	in pairs(layer) do
+				if v.color then
+					love.graphics.setColor(v.color.r,v.color.g,v.color.b,v.color.a)
+				else
+					love.graphics.setColor(0xff,0xff,0xff,0xff)
+				end
+				
 				if v.pose.image then
 					love.graphics.draw(v.pose.image,v.x,v.y)
 				end

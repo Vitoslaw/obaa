@@ -6,11 +6,10 @@ require "events_control"
 require "scene"
 
 require "physics"
-require "resources/physics"
+require "physics_equasions"
 
 require "objects"
-require "img"
-require "resources/units"
+require "graphics_control"
 
 require "events_control"
 
@@ -23,8 +22,13 @@ function love.load()
 	clockOn = false
 	clock = 0
 
-	loadfile("configuration.lua")
+	dofile("configuration.lua")
+	dofile("install_info.lua")
+	
+	dofile("resources/units.lua")
 
+
+	LoadGraphics()
 	LoadKeybinds()
 	LoadScenes()
 	
