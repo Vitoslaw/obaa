@@ -12,6 +12,8 @@ require "objects"
 require "graphics_control"
 
 require "events_control"
+require "AI_control"
+require "input_control"
 
 
 function love.load()
