@@ -3,7 +3,7 @@ local statics = {
 	l1 = {
 	
 		keyboardControlBackground = static.new(nil,nil,nil,nil,"quit"),
-		newGameButton = static.new(screenWidth/2-49,screenHeight/2-8,nil,"button","newGameButton",nil,"newGameButton")
+		storyMode = static.new(screenWidth/2,screenHeight/2,darkGray255,nil,nil,nil,"storyMode")
 	}
 }
 

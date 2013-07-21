@@ -31,16 +31,14 @@ eventSchemes.button = {
 		if self.pose.image then
 			local f,t = pairs(self.pose.occupy)
 			if ifHover(love.mouse.getX(),love.mouse.getY(),self.x+t[1],self.y+t[2],self.x+t[3],self.y+t[4]) then
-				self.pose = self.poses.highlighted
+				self.color = red255
 			else
-				self.pose = self.poses.default 
+				self.color = white255
 			end
 		else
 			if self.poses then
 				self.pose = self.poses.default
 			end
 		end
-	end,
-	
-	
+	end
 }

@@ -1,9 +1,12 @@
+require "io_control"
+require "install"
+
 require "addons/switch"
 require "addons/ifHover"
 
-require "events_control"
+require "default_configuration"
 
-require "scene"
+require "scene_control"
 
 require "physics"
 require "physics_equasions"
@@ -20,20 +23,18 @@ function love.load()
 
 	screenWidth = love.graphics.getWidth()
 	screenHeight = love.graphics.getHeight()
-
+	
 	clockOn = false
 	clock = 0
 
-	dofile("configuration.lua")
-	dofile("install_info.lua")
-	
-	dofile("resources/units.lua")
 
+	InstallData()
 
 	LoadGraphics()
 	LoadKeybinds()
-	LoadScenes()
+	LoadScenes("default")
 	
+	dofile(love.filesystem.getSaveDirectory().."units.lua")
 end
 
 function love.update(elapsed)
@@ -47,9 +48,14 @@ function love.draw()
 
 	DrawScene()
 	
-	
 	--[[###DEBUG CODE###
 	
+	love.graphics.print(dataFolder,0,0)
+	
+	--###DEBUG CODE###]]
+	
+	--[[###DEBUG CODE###
+		
 	local shift = 0
 	for m,tab in pairs(choseMode.statics.l1.arenaButton.pose) do
 		--for k,v in pairs(tab) do 
@@ -63,6 +69,7 @@ end
 
 function love.keypressed(key)
 	OnKeyPressScene(key)
+	DebugControl(key)
 end
 
 function love.keyreleased(key)
