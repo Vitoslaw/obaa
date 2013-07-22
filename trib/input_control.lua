@@ -47,7 +47,7 @@ function LoadKeybinds()
 	}
 	
 	keybindSchemes.toStartMenu.press = {
-		["escape"] = function() eventSchemes._toScene(startMenu) end
+		["escape"] = function() eventSchemes._toScene("startMenu") end
 	}
 	
 	
@@ -63,7 +63,7 @@ function LoadKeybinds()
 				self.x+t[3],
 				self.y+t[4]) 
 			then 
-				eventSchemes._toScene(choseMode)
+				eventSchemes._toScene("choseMode")
 			end 
 		end
 	}
@@ -77,7 +77,7 @@ function LoadKeybinds()
 				self.x+t[3],
 				self.y+t[4])
 			then
-				eventSchemes._toScene(arenaConf)
+				eventSchemes._toScene("arenaConf")
 			end
 		end
 	}

@@ -11,8 +11,9 @@ eventSchemes = {
 		end,
 		
 		
-		_toScene = function(scene)
-			activeScene = scene
+		_toScene = function(entity)
+			loadstring("activeScene = "..entity.extra.screen)()
+			activeScene.cache = scene
 		end
 }
 
@@ -40,5 +41,11 @@ eventSchemes.button = {
 				self.pose = self.poses.default
 			end
 		end
+	end
+}
+
+eventSchemes.boot = {
+	check = function(self)
+		eventSchemes._toScene(self)
 	end
 }
