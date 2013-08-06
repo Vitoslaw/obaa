@@ -1,10 +1,7 @@
 function InstallData()
-	local con
 
 	--:::unfinished:::if not love.filesystem.exists("configuration.lua") then
-		con = io.open(love.filesystem.getSaveDirectory().."configuration.lua","w+")
-		con:write(defaultConfig)
-		con:close()
+		love.filesystem.write("configuration.lua",defaultConfig)
 	--:::unfinished:::end
 	
 	--if not love.filesystem.exists("resources") then
@@ -15,9 +12,7 @@ function InstallData()
 		love.filesystem.mkdir("resources/sprites")
 		require "graphics_database"
 		for k,v in pairs(defaultGraphics) do
-			con = io.open(love.filesystem.getSaveDirectory().."resources/sprites/"..k..".lua","w+")
-			con:write(v)
-			con:close()
+			love.filesystem.write("resources/sprites/"..k..".lua",v)
 		end
 	--end
 	
@@ -26,17 +21,13 @@ function InstallData()
 
 		require "objects_database"
 		for k,v in pairs(objectsPresets) do
-			con = io.open(love.filesystem.getSaveDirectory().."resources/objects/"..k..".lua","w+")
-			con:write(v)
-			con:close()
+			love.filesystem.write("resources/objects/"..k..".lua",v)
 		end
 	--end
 	
 	--if not love.filesystem.exists("resources/units.lua") then
 		require "units_database"
-		con = io.open(love.filesystem.getSaveDirectory().."resources/units.lua","w+")
-		con:write(defaultUnits)
-		con:close()
+love.filesystem.write("resources/units.lua",defaultUnits)
 	--end
 
 	SaveScenes("default")

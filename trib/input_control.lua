@@ -1,5 +1,10 @@
 function KeybindNew(press,pressM,release,releaseM)
-	return {
+	if not press then press = {} end
+	if not pressM then pressM = {} end
+	if not release then release = {} end
+	if not releaseM then releaseM = {} end
+	
+	return {		
 		press = press, release = release,
 		pressMouse = pressM, releaseMouse = releaseM,
 		onPress = function(self, key, x, y)
@@ -22,7 +27,7 @@ function KeybindNew(press,pressM,release,releaseM)
 			if x then
 				if self.keybind.releaseMouse[key] then
 					self.keybind.releaseMouse[key](self, x, y)
-				elseif self.keybind.releaseMous.any then
+				elseif self.keybind.releaseMouse.any then
 					self.keybind.releaseMouse.any(self, x, y)
 				end
 			else

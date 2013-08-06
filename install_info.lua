@@ -1,1 +1,0 @@
-installLocation = love.filesystem.getWorkingDirectory()

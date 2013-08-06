@@ -4,16 +4,31 @@ events = {
 		end,
 		
 		
-		_toScene = function(sce)
+		_toScene = function(sce,save)
 			cache.previousScene = cache.activeScene
 
-			scenes[cache.activeScene] = activeScene
+			if save then 
+				scenes[cache.activeScene] = scenes.activeScene
+			end
 			
-			local chunk = loadstring("activeScene = "..sce)
-			chunk()
+			scenes.activeScene = scenes[sce]
 
 			cache.activeScene = sce
 		end
+}
+
+effects = {
+	fadeOut = function(self)
+		if not self.pose.begin then self.pose.begin = clock end
+		
+		bg = self.pose.begin
+		
+		if clock - bg < 2 then
+			self.color.a = (clock - bg) * 120
+		elseif clock - bg > 3 then
+			self.color.a = (bg - clock + 3) * 120
+		end
+	end
 }
 
 eventSchemes = {

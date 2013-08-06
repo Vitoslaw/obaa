@@ -1,16 +1,16 @@
 defaultScenes = {
-	["bootScene"] = "bootScene = scene.new({})\r\n\r\nbootScene.objects = {\r\n\tl1 = {backgroundControl = NewBackgroundControl(function() events._toScene(\"logoScene\") end)\r\n}}\r\n\r\nactiveScene = bootScene\r\ncache.activeScene = \"bootScene\"",
-	["logoScene"] = "logoScene = scene.new({l1 = true})\r\n\r\nlogoScene.objects = {\r\n\tl1 = {\r\n\t\tlogo = PictureNew(260,120,images.logoRCP)\r\n}}",
-	["introScene"] = "introScene = scene.new(true)\r\n\r\nintroScene.objects = {}\r\nintroScene.statics = {}",
-	["choseUser"] = "choseUser = scene.new(true)\r\n\r\nchoseUser.objects = {}\r\nchoseUser.statics = {}",
-	["mainMenu"] = "mainMenu = scene.new(true)\r\n\r\nmainMenu.objects = {}\r\nmainMenu.statics = {}",
-	["prepareArenaScene"] = "prepareArenaScene = scene.new(true)\r\n\r\nprepareArenaScene.objects = {}\r\nprepareArenaScene.statics = {}",
-	["arenaScene"] = "arenaScene = scene.new(false)\r\n\r\narenaScene.objects = {}\r\narenaScene.statics = {}",
-	["arenaScoreScene"] = "arenaScoreScene = scene.new(true)\r\n\r\narenaScoreScene.objects = {}\r\narenaScoreScene.statics = {}",
-	["settingsScene"] = "settingsScene = scene.new(true)\r\n\r\nsettingsScene.objects = {}\r\nsettingsScene.statics = {}",
+	["boot"] = "local sce = scene.new({})\r\n\r\nsce.objects = {\r\n\tl1 = {\r\n\t\tbackgroundControl = NewBackgroundControl(function() events._toScene(\"logo\") end)\r\n}}\r\n\r\nreturn sce",
+	["logo"] = "local sce = scene.new({l1 = true})\r\n\r\nsce.objects = {\r\n\tl1 = {\r\n\t\tlogo = PictureNew(260,120,images.logoRCP,fadeOut),\r\n\t\tskip = NewBackgroundControl(\r\n\t\t\tnil,\r\n\t\t\tKeybindNew({any = function() events._toScene(\"intro\") end},{any = function() events._toScene(\"intro\") end}))}}\r\n\r\nreturn sce",
+	["intro"] = "local sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
+	["choseUser"] = "local sce = scene.new(true)\r\n\r\sce.objects = {}\r\n\r\nreturn sce",
+	["mainMenu"] = "local sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
+	["prepareArena"] = "local sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
+	["arena"] = "local sce = scene.new(false)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
+	["arenaScore"] = "local sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
+	["settings"] = "local sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
 	
 	
-	["quitScene"] = "quitScene = scene.new(true)\r\n\r\nquitScene.objects = {}\r\nquitScene.statics = {}",
+	["quit"] = "sce = scene.new(true)\r\n\r\nsce.objects = {}\r\n\r\nreturn sce",
 	
-	["debug"] = "function DebugControl(key)\r\n\tif love.keyboard.isDown(\"alt\") then\r\n\t\tif key == \"h\" then\r\n\t\t\tactiveScene = debugHub\r\n\t\tend\r\n\tend\r\nend\r\n\r\ndebugHub = scene.new()\r\n\r\ndebugHub.objects = {}\r\ndebugHub.statics = {}"
+	["debug"] = "function DebugControl(key)\r\n\tif love.keyboard.isDown(\"alt\") then\r\n\t\tif key == \"h\" then\r\n\t\t\ttoScene(\"debugHub\")\r\n\t\tend\r\n\tend\r\nend\r\n\r\ndebugHub = scene.new()\r\n\r\ndebugHub.objects = {}"
 }

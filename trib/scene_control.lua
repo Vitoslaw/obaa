@@ -24,7 +24,7 @@ function scene:onKeyPress(key)
 	for dumb,t in pairs(self.objects) do
 		for k,v	in pairs(t) do
 			if v.keybind then
-				v.keybind.onPress(self,key)
+				v.keybind.onPress(v,key)
 			end
 		end
 	end
@@ -34,7 +34,7 @@ function scene:onKeyRelease(key)
 	for dumb,t in pairs(self.objects) do 
 		for k,v in pairs(t) do
 			if v.keybind then
-				v.keybind.onRelease(self,key)
+				v.keybind.onRelease(v,key)
 			end
 		end
 	end
@@ -44,7 +44,7 @@ function scene:onMousePress(key, x, y)
 	for dumb,t in pairs(self.objects) do
 		for k,v	in pairs(t) do
 			if v.keybind then
-				v.keybind.onPress(self,key, x, y)
+				v.keybind.onPress(v,key, x, y)
 			end
 		end
 	end
@@ -54,7 +54,7 @@ function scene:onMouseRelease(key, x, y)
 	for dumb,t in pairs(self.objects) do
 		for k,v	in pairs(t) do
 			if v.keybind then
-				v.keybind.onRelease(self,key, x, y)
+				v.keybind.onRelease(v,key, x, y)
 			end
 		end
 	end
@@ -91,25 +91,25 @@ end
 
 
 function UpdateScene(elapsed)
-	activeScene:update(elapsed)
+	scenes.activeScene:update(elapsed)
 end
 
 function DrawScene()
-	activeScene:draw()
+	scenes.activeScene:draw()
 end
 
 function OnKeyPressScene(key)
-	activeScene:onKeyPress(key)
+	scenes.activeScene:onKeyPress(key)
 end
 
 function OnKeyReleaseScene(key)
-	activeScene:onKeyRelease(key)
+	scenes.activeScene:onKeyRelease(key)
 end
 
 function OnMousePressScene(key, x, y)
-	activeScene:onMousePress(key, x, y)
+	scenes.activeScene:onMousePress(key, x, y)
 end
 
 function OnMouseReleaseScene(key, x, y)
-	activeScene:onMouseRelease(key, x, y)
+	scenes.activeScene:onMouseRelease(key, x, y)
 end

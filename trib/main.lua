@@ -20,6 +20,8 @@ require "input_control"
 
 
 function love.load()
+	cache = {}
+
 	love.graphics.setBackgroundColor(0x34,0x5b,0x82)
 	love.graphics.setDefaultImageFilter("nearest","nearest")
 
@@ -36,12 +38,13 @@ function love.load()
 	clockOn = true
 	clock = 0
 
-	cache = {}
-
 	LoadGraphics()
 	LoadKeybinds()
 	LoadObjects()
 	LoadScenes("default")
+	
+	scenes.activeScene = scenes.boot
+	cache.activeScene = "boot"
 end
 
 function love.update(elapsed)
@@ -57,21 +60,21 @@ function love.draw()
 
 	--[[###DEBUG CODE###
 
-	love.graphics.print(love.graphics.getHeight()/360,0,0)
+	love.graphics.print(tostring(cache.succes),0,0)
 
 	--###DEBUG CODE###]]
 
 	--[[###DEBUG CODE###
 
 	local shift = 0
-
-	for m,tab in pairs(spritesData) do
+	--if cache.debug then
+	for m,tab in pairs(scenes) do
 		--for k,v in pairs(tab.pose) do 
-			love.graphics.print(tostring(m).." : "..tostring("resources/sprites/"..tab),0,shift)
+			love.graphics.print(tostring(m).." : "..tostring(tab),0,shift)
 			shift = shift + 20
 		--end
+	--end
 	end
-	
 	--###DEBUG CODE###]]
 end
 

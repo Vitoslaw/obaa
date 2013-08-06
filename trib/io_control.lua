@@ -9,7 +9,7 @@ function SaveScenes(save)
 	else
 		require "scenes_database"
 
-		love.filesystem.remove("saves/"..save)
+		cache.succes = love.filesystem.remove("saves/"..save)
 		love.filesystem.mkdir("saves/"..save)
 
 		for k,v in pairs(defaultScenes) do
