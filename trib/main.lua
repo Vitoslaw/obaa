@@ -4,37 +4,44 @@ require "install"
 require "addons/switch"
 require "addons/ifHover"
 
+require "resolution_control"
+
 require "default_configuration"
 
 require "scene_control"
 
-require "physics"
-require "physics_equasions"
+require "objects_control"
 
-require "objects"
 require "graphics_control"
 
-require "events_control"
+require "events_control" 
 require "AI_control"
 require "input_control"
 
 
 function love.load()
-
-	screenWidth = love.graphics.getWidth()
-	screenHeight = love.graphics.getHeight()
-	
-	clockOn = false
-	clock = 0
-
+	love.graphics.setBackgroundColor(0x34,0x5b,0x82)
+	love.graphics.setDefaultImageFilter("nearest","nearest")
 
 	InstallData()
 
+	if love.filesystem.exists("configuration.lua") then
+		dofile(love.filesystem.getSaveDirectory().."configuration.lua")
+
+		LoadResolution()
+	end
+
+	love.graphics.setNewFont("8bitlim.ttf",24)
+
+	clockOn = true
+	clock = 0
+
+	cache = {}
+
 	LoadGraphics()
 	LoadKeybinds()
+	LoadObjects()
 	LoadScenes("default")
-	
-	dofile(love.filesystem.getSaveDirectory().."units.lua")
 end
 
 function love.update(elapsed)
@@ -44,22 +51,23 @@ function love.update(elapsed)
 end
 
 function love.draw()
-	love.graphics.setBackgroundColor(0xDC,0xCF,0xA5)
-
+	TranslateScreen()
+	
 	DrawScene()
-	
+
 	--[[###DEBUG CODE###
-	
-	love.graphics.print(dataFolder,0,0)
-	
+
+	love.graphics.print(love.graphics.getHeight()/360,0,0)
+
 	--###DEBUG CODE###]]
-	
+
 	--[[###DEBUG CODE###
-		
+
 	local shift = 0
-	for m,tab in pairs(choseMode.statics.l1.arenaButton.pose) do
-		--for k,v in pairs(tab) do 
-			love.graphics.print(tostring(m).." : "..tostring(tab),0,shift)
+
+	for m,tab in pairs(spritesData) do
+		--for k,v in pairs(tab.pose) do 
+			love.graphics.print(tostring(m).." : "..tostring("resources/sprites/"..tab),0,shift)
 			shift = shift + 20
 		--end
 	end
