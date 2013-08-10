@@ -1,4 +1,4 @@
-﻿function love.conf(t)
+function love.conf(t)
     t.title = "Of Bronze and Atom"        -- The title of the window the game is in (string)
     t.author = "RANDOM CRAP PRODUCTION"       	-- The author of the game (string)
     t.url = nil                 -- The website of the game (string)
