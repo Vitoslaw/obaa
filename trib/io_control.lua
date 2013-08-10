@@ -1,6 +1,6 @@
 function SaveScenes(save)
 	if love.filesystem.exists("saves/"..save) and save ~= "default" then
-		love.filesystem.remove("saves/"..save)
+		rmFolder("saves/"..save)
 		love.filesystem.mkdir("saves/"..save)
 
 		for k,v in pairs(scenes) do
@@ -9,7 +9,7 @@ function SaveScenes(save)
 	else
 		require "scenes_database"
 
-		cache.succes = love.filesystem.remove("saves/"..save)
+		rmFolder("saves/"..save)
 		love.filesystem.mkdir("saves/"..save)
 
 		for k,v in pairs(defaultScenes) do
@@ -18,41 +18,50 @@ function SaveScenes(save)
 	end
 end
 
-function LoadScenes(save)
-	sceneFiles = love.filesystem.enumerate("saves/"..save)
-	scenes = {}
-	
-	for k, v in pairs(sceneFiles) do
-		sceneName = v:gsub(".lua","")
-		scenes[sceneName] = love.filesystem.load("saves/"..save.."/"..v)()
+function InitiateLoadScenes(s)
+	save = s
+	sceneFiles = love.filesystem.enumerate("saves/"..s)
+	dumb,sceneFileNames = ipairs(sceneFiles)
+end
+
+function LoadScenes(n)
+	if sceneFileNames[n] then
+		sceneName = sceneFileNames[n]:gsub(".lua","")
+		scenes[sceneName] = love.filesystem.load("saves/"..save.."/"..sceneFileNames[n])()
+	else
+		return true
 	end
 end
 
-function LoadObjects()
-	objectFiles = love.filesystem.enumerate("resources/objects")
+function LoadObjects(n)
+	if objectFileNames[n] then
+		objectName = objectFileNames[n]:gsub(".lua","")
+		objectsName = love.filesystem.load("resources/objects/"..objectFileNames[n])()
 	
-	for k, v in pairs(objectFiles) do
-		objectName = v:gsub(".lua","")
-		objectsName = love.filesystem.load("resources/objects/"..v)()
+		f = n
+	else
+		return true
 	end
 end
 
-function LoadGraphics()
-	spritesData = love.filesystem.enumerate("resources/sprites")
-	
-	for dumb,fileName in pairs(spritesData) do
-		if fileName:find(".lua") then
-		
-		gs,i = love.filesystem.load("resources/sprites/"..fileName)()
-		
+function LoadGraphics(n)
+	if spriteFileNames[n] then
+		if spriteFileNames[n]:find(".lua") then
+
+		gs,i = love.filesystem.load("resources/sprites/"..spriteFileNames[n])()
+
 			for name,pos in pairs(gs) do
 				graphicSchemes[name] = pos
 			end
-			
+
 			for name,img in pairs(i) do
 				images[name] = img
 			end
 		end
+		
+		m = n
+	else
+		return true
 	end
 end
 

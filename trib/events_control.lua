@@ -5,6 +5,8 @@ events = {
 		
 		
 		_toScene = function(sce,save)
+			clock = 0
+			
 			cache.previousScene = cache.activeScene
 
 			if save then 
@@ -14,6 +16,17 @@ events = {
 			scenes.activeScene = scenes[sce]
 
 			cache.activeScene = sce
+		end,
+		
+		_wait = function(period)
+			if not cache.wait then cache.wait = clock end
+			
+			if clock - cache.wait > period then
+				cache.wait = nil
+				return true
+			else
+				return false
+			end
 		end
 }
 
@@ -24,9 +37,11 @@ effects = {
 		bg = self.pose.begin
 		
 		if clock - bg < 2 then
-			self.color.a = (clock - bg) * 120
-		elseif clock - bg > 3 then
-			self.color.a = (bg - clock + 3) * 120
+			self.color.a = (clock - bg) * 126
+		elseif clock - bg > 3 and clock - bg < 5 then
+			self.color.a = (bg - clock + 3) * 126
+		elseif clock - bg > 5 then
+			self.color.a = 0
 		end
 	end
 }

@@ -5,6 +5,18 @@ function color.new(r,g,b,a)
 	return setmetatable({["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a},color)
 end
 
+function PictureNew(data)
+	if type(data) == "string" then
+		if love.filesystem.isFile(data) then
+			return love.graphics.newImage(data)
+		else
+			return images.missingPicture
+		end
+	elseif data then
+		return love.graphics.newImage(data)
+	end
+end
+
 noMask = color.new(255,255,255,255)
 
 transparent128 = color.new(255,255,255,128)

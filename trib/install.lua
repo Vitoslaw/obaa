@@ -27,7 +27,7 @@ function InstallData()
 	
 	--if not love.filesystem.exists("resources/units.lua") then
 		require "units_database"
-love.filesystem.write("resources/units.lua",defaultUnits)
+		love.filesystem.write("resources/units.lua",unitPresets)
 	--end
 
 	SaveScenes("default")
