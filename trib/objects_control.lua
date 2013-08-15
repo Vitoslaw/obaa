@@ -15,7 +15,10 @@ function PoseNew(tab)
 end
 
 function object.new(tab)
-	tab.color = {r = 255, g = 255, b = 255,a = 255}
+	if not tab.color then
+		tab.color = {r = 255, g = 255, b = 255,a = 255}
+	end
+	
 	return setmetatable(tab,object)
 end
 

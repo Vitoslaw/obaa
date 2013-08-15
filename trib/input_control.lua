@@ -40,9 +40,3 @@ function KeybindNew(press,pressM,release,releaseM)
 		end
 	}
 end
-
-function LoadKeybinds()
-	keybindSchemes = {
-		
-	}
-end

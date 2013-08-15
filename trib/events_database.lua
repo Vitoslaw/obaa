@@ -31,17 +31,29 @@ events = {
 }
 
 effects = {
-	fadeOut = function(self)
-		if not self.pose.begin then self.pose.begin = clock end
+	fadeOut = function(start,inT,susT,outT)
+
+		if not inT then
+			local inT = 2
+			local susT = 3
+			local outT = 5
+		end
 		
-		bg = self.pose.begin
-		
-		if clock - bg < 2 then
-			self.color.a = (clock - bg) * 126
-		elseif clock - bg > 3 and clock - bg < 5 then
-			self.color.a = (bg - clock + 3) * 126
-		elseif clock - bg > 5 then
-			self.color.a = 0
+		return function(self)
+			if not self.pose.begin then self.pose.begin = start or clock end
+			
+			inT = inT
+			susT = susT
+			outT = outT
+			
+			start = self.pose.begin
+			if clock < start or clock > outT then
+				self.color.a = 0
+			elseif clock < inT then
+				self.color.a = 255 * (clock - start)/(inT - start)
+			elseif clock > susT then
+				self.color.a = 255 * (outT - clock)/(outT - susT)
+			end
 		end
 	end
 }

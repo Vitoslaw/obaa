@@ -15,7 +15,7 @@ require "objects_control"
 
 require "graphics_control"
 
-require "events_control" 
+require "events_database" 
 require "AI_control"
 require "input_control"
 
@@ -41,7 +41,6 @@ function love.load()
 	scenes = {}
 
 	scenes.loadingMaster = scene.new({l1 = true})
---	pos.image = love.graphics.newImage("resources/sprites/GUI/loading_anim.png")
 	n = 0
 	
 	InitiateLoadScenes("default")
@@ -52,32 +51,52 @@ function love.load()
 	spritesData = love.filesystem.enumerate("resources/sprites")
 	dumb,spriteFileNames = ipairs(spritesData)
 	
+	dir = "resources/sprites/GUI/"
 	
-	LoadKeybinds()
+	local pos1 = {}
+	pos1.image = ImageNew(dir.."RCP_logo.png")
+	local pos2 = {}
+	pos2.image = ImageNew(dir.."love_logo.png")
+	local pos3 = {}
+	pos3.text = "Made with"
+	pos3.alignment = "center"
 	
-	scenes.loadingMaster.objects = {l1 = {animatedimage = object.new({x = 0, y = 340, pose ={},
-	event = function(self)
-		n = n + 1 
-		if spriteFileNames[n] then
-			cache.loadingState = "resources/sprites/"..spriteFileNames[n]
-		elseif objectFileNames[n-m] then 
-			cache.loadingState = "resources/objects/"..objectFileNames[n-m]
-		elseif sceneFileNames[n-f] then
-			cache.loadingState = "saves/default/"..sceneFileNames[n-f]
-		end
-		
-		if LoadGraphics(n) then
-			if LoadObjects(n-m) then
-				if LoadScenes(n-f) then
-					--love.graphics.setNewFont("8bitlim.ttf",24)
-					events._toScene("boot")
-				end 
-			end 
-		end 
-		
-		self.pose.text = "Loading "..cache.loadingState
-		
-		end})}}
+	
+	scenes.loadingMaster.objects = {l1 = {
+		backgrounColor = object.new({event = function() if clock < 5 then love.graphics.setBackgroundColor(0x34,0x5b,0x82) elseif clock < 10 then scenes.activeScene.objects.l1.loadingInfo.color = black255 love.graphics.setBackgroundColor(0xff,0xff,0xff) else love.graphics.setBackgroundColor(0,0,0) end end}),
+
+		logo1 = object.new({x = 260, y = 120, pose = pos1, event = effects.fadeOut(0,2,3,5)}),
+		logo2 = object.new({x = 133, y = 120, pose = pos2, event = effects.fadeOut(5,7,8,10)}),
+		text = object.new({x = 0, y = 100, color = black255, pose = pos3, event = effects.fadeOut(5,7,8,10)}),
+
+		loadingInfo = object.new({x = 0, y = 340, pose = {},
+			event = function(self)
+				n = n + 1
+				if spriteFileNames[n] then
+					cache.loadingState = "resources/sprites/"..spriteFileNames[n]
+				elseif objectFileNames[n-m] then
+					cache.loadingState = "resources/objects/"..objectFileNames[n-m]
+				elseif sceneFileNames[n-f] then
+					cache.loadingState = "saves/default/"..sceneFileNames[n-f]
+				end
+
+				if LoadGraphics(n) then
+					if LoadObjects(n-m) then
+						if LoadScenes(n-f) then
+							cache.loadingState = nil
+							if clock > 10 then love.graphics.setNewFont("8bitlim.ttf",24) events._toScene("boot") end
+						end
+					end
+				end
+
+				if cache.loadingState then
+					self.pose.text = "Loading "..cache.loadingState
+				else
+					self.pose.text = nil
+				end
+
+			end})
+	}}
 	
 	scenes.activeScene = scenes.loadingMaster
 	cache.activeScene = "loadingMaster"
@@ -105,7 +124,7 @@ function love.draw()
 
 	local shift = 0
 	--if cache.debug then
-	for m,n in pairs(scenes.activeScene.objects.l1.logo) do
+	for m,n in pairs(scenes.activeScene.objects.l1.logo1) do
 		--for k,v in pairs(n) do 
 			love.graphics.print(tostring(m).." : "..tostring(n),0,shift)
 			shift = shift + 20

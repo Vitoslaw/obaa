@@ -73,7 +73,7 @@ function scene:draw()
 
 			if v.pose then
 				if v.pose.text then
-					love.graphics.printf(v.pose.text,v.x,v.y,v.pose.limit or screenWidth,v.pose.aligment or "left")
+					love.graphics.printf(v.pose.text,v.x,v.y,v.pose.limit or screenWidth,v.pose.alignment or "left")
 				end
 
 				if v.pose.image then
