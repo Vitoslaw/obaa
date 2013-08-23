@@ -22,10 +22,20 @@ require "input_control"
 
 function love.load()
 	cache = {}
+	scenes = {}
 
+	clockOn = true
+	clock = 0
+	
+	nLoad = 0
+	
 	love.graphics.setBackgroundColor(0,0,0)
-	love.graphics.setDefaultImageFilter("nearest","nearest")
-
+	love.graphics.setDefaultImageFilter("nearest","linear")
+	
+	InitiateLoadScenes("default")
+	objectFileNames = love.filesystem.enumerate("resources/objects")
+	spriteFileNames = love.filesystem.enumerate("resources/sprites_data")
+	
 	InstallData()
 
 	if love.filesystem.exists("configuration.lua") then
@@ -34,22 +44,6 @@ function love.load()
 
 		LoadResolution()
 	end
-
-	clockOn = true
-	clock = 0
-
-	scenes = {}
-
-	scenes.loadingMaster = scene.new({l1 = true})
-	n = 0
-	
-	InitiateLoadScenes("default")
-	
-	objectFiles = love.filesystem.enumerate("resources/objects")
-	dumb,objectFileNames = ipairs(objectFiles)	
-	
-	spritesData = love.filesystem.enumerate("resources/sprites")
-	dumb,spriteFileNames = ipairs(spritesData)
 	
 	dir = "resources/sprites/GUI/"
 	
@@ -61,7 +55,12 @@ function love.load()
 	pos3.text = "Made with"
 	pos3.alignment = "center"
 	
+	LoadAudio()
+	--love.audio.play(CdE)
 	
+	love.audio.setVolume(0.5)
+	
+	scenes.loadingMaster = scene.new({l1 = true})
 	scenes.loadingMaster.objects = {l1 = {
 		backgrounColor = object.new({event = function() if clock < 5 then love.graphics.setBackgroundColor(0x34,0x5b,0x82) elseif clock < 10 then scenes.activeScene.objects.l1.loadingInfo.color = black255 love.graphics.setBackgroundColor(0xff,0xff,0xff) else love.graphics.setBackgroundColor(0,0,0) end end}),
 
@@ -71,18 +70,18 @@ function love.load()
 
 		loadingInfo = object.new({x = 0, y = 340, pose = {},
 			event = function(self)
-				n = n + 1
-				if spriteFileNames[n] then
-					cache.loadingState = "resources/sprites/"..spriteFileNames[n]
-				elseif objectFileNames[n-m] then
-					cache.loadingState = "resources/objects/"..objectFileNames[n-m]
-				elseif sceneFileNames[n-f] then
-					cache.loadingState = "saves/default/"..sceneFileNames[n-f]
+				nLoad = nLoad + 1
+				if spriteFileNames[nLoad] then
+					cache.loadingState = "resources/sprites/"..spriteFileNames[nLoad]
+				elseif objectFileNames[nLoad-mLoad] then
+					cache.loadingState = "resources/objects/"..objectFileNames[nLoad-mLoad]
+				elseif sceneFileNames[nLoad-fLoad] then
+					cache.loadingState = "saves/default/"..sceneFileNames[nLoad-fLoad]
 				end
 
-				if LoadGraphics(n) then
-					if LoadObjects(n-m) then
-						if LoadScenes(n-f) then
+				if LoadGraphics(nLoad) then
+					if LoadObjects(nLoad-mLoad) then
+						if LoadScenes(nLoad-fLoad) then
 							cache.loadingState = nil
 							if clock > 10 then love.graphics.setNewFont("8bitlim.ttf",24) events._toScene("boot") end
 						end
@@ -100,9 +99,14 @@ function love.load()
 	
 	scenes.activeScene = scenes.loadingMaster
 	cache.activeScene = "loadingMaster"
+	
+	step = 1 / FPSLimit or 1 / 60
+	timePast = love.timer.getMicroTime()
 end
 
 function love.update(elapsed)
+	timePast = timePast + step
+
 	if clockOn then clock = clock + elapsed end
 
 	UpdateScene(elapsed)
@@ -114,9 +118,14 @@ function love.draw()
 	DrawScene()
 
 	love.graphics.setColor(0xff,0xff,0xff,0xff)
+	
+	if showFPS then
+		love.graphics.print(love.timer.getFPS(),0,0)
+	end
+	
 	--[[###DEBUG CODE###
 
-	love.graphics.print(tostring(cache.wait),0,0)
+	love.graphics.print(love.timer.getFPS(),0,0)
 
 	--###DEBUG CODE###]]
 
@@ -124,7 +133,7 @@ function love.draw()
 
 	local shift = 0
 	--if cache.debug then
-	for m,n in pairs(scenes.activeScene.objects.l1.logo1) do
+	for m,n in pairs(objectFileNames) do
 		--for k,v in pairs(n) do 
 			love.graphics.print(tostring(m).." : "..tostring(n),0,shift)
 			shift = shift + 20
@@ -132,6 +141,13 @@ function love.draw()
 	--end
 	end
 	--###DEBUG CODE###]]
+	
+	local timeNow = love.timer.getMicroTime()
+	if timePast <= timeNow then
+		timePast = timeNow
+		return
+	end
+	love.timer.sleep(timePast - timeNow)
 end
 
 function love.keypressed(key)

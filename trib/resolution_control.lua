@@ -1,6 +1,12 @@
 function TranslateScreen()
-	local scale = love.graphics.getHeight()/360
-	love.graphics.scale(scale)
+	screenHeight = love.graphics.getHeight()
+	screenWidth = love.graphics.getWidth()
+
+	local scale = screenHeight / 360
+	love.graphics.scale(math.sqrt(scale))
+	
+	screenWidth = screenWidth / scale
+	screenHeight = screenHeight / scale
 end
 
 function LoadResolution()

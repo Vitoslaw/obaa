@@ -42,10 +42,6 @@ effects = {
 		return function(self)
 			if not self.pose.begin then self.pose.begin = start or clock end
 			
-			inT = inT
-			susT = susT
-			outT = outT
-			
 			start = self.pose.begin
 			if clock < start or clock > outT then
 				self.color.a = 0
@@ -55,6 +51,26 @@ effects = {
 				self.color.a = 255 * (outT - clock)/(outT - susT)
 			end
 		end
+	end,
+	
+	fadeIn = function(start,finish)
+	
+	if not finish then finish = start + 0.5 end
+	
+	return function(self)
+		if not self.pose.begin then self.pose.begin = start or clock end
+
+		if clock > start then
+			if clock < finish then
+				self.color.a = 255 * (clock - start)/(finish - start)
+			else
+				self.color.a = 255
+				self.event = nil
+			end
+		else 
+			self.color.a = 0
+		end
+	end
 	end
 }
 

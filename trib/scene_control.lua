@@ -70,7 +70,13 @@ function scene:draw()
 			else
 				love.graphics.setColor(0xff,0xff,0xff,0xff)
 			end
-
+			
+			if v.colorMode then
+				love.graphics.setColorMode(v.colorMode)
+			else
+				love.graphics.setColorMode("modulate")
+			end
+			
 			if v.pose then
 				if v.pose.text then
 					love.graphics.printf(v.pose.text,v.x,v.y,v.pose.limit or screenWidth,v.pose.alignment or "left")

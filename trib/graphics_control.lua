@@ -9,8 +9,6 @@ function ImageNew(data)
 	if type(data) == "string" then
 		if love.filesystem.isFile(data) then
 			return love.graphics.newImage(data)
-		else
-			return images.missingPicture
 		end
 	elseif data then
 		return love.graphics.newImage(data)
