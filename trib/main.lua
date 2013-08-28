@@ -1,9 +1,23 @@
+--[[
+
+TO-DO :
+
+fix letterBox(weird occupy boxes);
+prepareArena(according to GIMP schematic);
+saving system;
+
+
+]]
+
+function love.load()
 require "io_control"
 require "install"
 
 require "addons/switch"
 require "addons/rmFolder"
 require "addons/ifHover"
+require "addons/drawHitbox"
+require "addons/extended_string"
 
 require "resolution_control"
 
@@ -19,56 +33,58 @@ require "events_database"
 require "AI_control"
 require "input_control"
 
+	love.filesystem.load("debug.lua")()
 
-function love.load()
+--namespace
 	cache = {}
 	scenes = {}
 
+--declaration
 	clockOn = true
 	clock = 0
 	
 	nLoad = 0
-	
+
+--graphics set-up
 	love.graphics.setBackgroundColor(0,0,0)
 	love.graphics.setDefaultImageFilter("nearest","linear")
+
+	local chunk = love.filesystem.load("configuration.lua")
+	chunk()
+
+	LoadResolution()
+	TranslateScreen()
+
+	fancyFont = love.graphics.newImageFont("resources/font/Imagefont.png"," abcdefghijklmnopqrstuvwxyz".."ABCDEFGHIJKLMNOPQRSTUVWXYZ0".."123456789.,!?-+/():;%&`'*#=[]\"")
+	standardFont = love.graphics.newFont(14 + math.floor(7 * (scale - 1)))
 	
+	activeFont = standardFont
+
+--loading scene
 	InitiateLoadScenes("default")
 	objectFileNames = love.filesystem.enumerate("resources/objects")
 	spriteFileNames = love.filesystem.enumerate("resources/sprites_data")
 	
+	
+--development	
 	InstallData()
-
-	if love.filesystem.exists("configuration.lua") then
-		local chunk = love.filesystem.load("configuration.lua")
-		chunk()
-
-		LoadResolution()
-	end
 	
 	dir = "resources/sprites/GUI/"
-	
-	local pos1 = {}
-	pos1.image = ImageNew(dir.."RCP_logo.png")
-	local pos2 = {}
-	pos2.image = ImageNew(dir.."love_logo.png")
-	local pos3 = {}
-	pos3.text = "Made with"
-	pos3.alignment = "center"
 	
 	LoadAudio()
 	--love.audio.play(CdE)
 	
 	love.audio.setVolume(0.5)
 	
-	scenes.loadingMaster = scene.new({l1 = true})
+	scenes.loadingMaster = scene.new({l1 = false})
 	scenes.loadingMaster.objects = {l1 = {
 		backgrounColor = object.new({event = function() if clock < 5 then love.graphics.setBackgroundColor(0x34,0x5b,0x82) elseif clock < 10 then scenes.activeScene.objects.l1.loadingInfo.color = black255 love.graphics.setBackgroundColor(0xff,0xff,0xff) else love.graphics.setBackgroundColor(0,0,0) end end}),
 
-		logo1 = object.new({x = 260, y = 120, pose = pos1, event = effects.fadeOut(0,2,3,5)}),
-		logo2 = object.new({x = 133, y = 120, pose = pos2, event = effects.fadeOut(5,7,8,10)}),
-		text = object.new({x = 0, y = 100, color = black255, pose = pos3, event = effects.fadeOut(5,7,8,10)}),
+		logo1 = object.new({x = 260, y = 120, pose = PoseNew({image = ImageNew(dir.."RCP_logo.png")}), event = effects.fadeOut(0,2,3,5)}),
+		logo2 = object.new({x = 133, y = 120, pose = PoseNew({image = ImageNew(dir.."love_logo.png")}), event = effects.fadeOut(5,7,8,10)}),
+		text = object.new({x = 0, y = 100, color = black255, pose = PoseNew({text = "Made with",alignment = "center"}), event = effects.fadeOut(5,7,8,10)}),
 
-		loadingInfo = object.new({x = 0, y = 340, pose = {},
+		loadingInfo = object.new({x = 0, y = 340, pose = PoseNew({}),
 			event = function(self)
 				nLoad = nLoad + 1
 				if spriteFileNames[nLoad] then
@@ -83,7 +99,7 @@ function love.load()
 					if LoadObjects(nLoad-mLoad) then
 						if LoadScenes(nLoad-fLoad) then
 							cache.loadingState = nil
-							if clock > 10 then love.graphics.setNewFont("8bitlim.ttf",24) events._toScene("boot") end
+							if clock > 10 then activeFont = fancyFont events._toScene("boot") end
 						end
 					end
 				end
@@ -94,12 +110,20 @@ function love.load()
 					self.pose.text = nil
 				end
 
-			end})
+			end}),
+			
+		keyboardControl = object.new({
+			keybind = KeybindNew(
+				{any = function() if not cache.loadingState and clock > 1 then activeFont = fancyFont events._toScene("boot") end end},
+				{any = function() if not cache.loadingState and clock > 1 then activeFont = fancyFont events._toScene("boot") end end}
+			)
+		})
 	}}
 	
 	scenes.activeScene = scenes.loadingMaster
 	cache.activeScene = "loadingMaster"
-	
+
+--fps limit
 	step = 1 / FPSLimit or 1 / 60
 	timePast = love.timer.getMicroTime()
 end
@@ -107,40 +131,26 @@ end
 function love.update(elapsed)
 	timePast = timePast + step
 
+	TranslateScreen()
+	
 	if clockOn then clock = clock + elapsed end
 
 	UpdateScene(elapsed)
 end
 
 function love.draw()
-	TranslateScreen()
-	
 	DrawScene()
 
+	love.graphics.setColor(0,0,0,0xff)
+	
+	love.graphics.rectangle("fill", 0, 0, 640 * scale, yLetter)
+	love.graphics.rectangle("fill", 0, 0, xLetter, 360 * scale)
+	love.graphics.rectangle("fill", 640 * scale, love.graphics.getHeight(), -640 * scale, -yLetter)
+	love.graphics.rectangle("fill", love.graphics.getWidth(), 360 * scale, -xLetter, -360 * scale)
+
 	love.graphics.setColor(0xff,0xff,0xff,0xff)
-	
-	if showFPS then
-		love.graphics.print(love.timer.getFPS(),0,0)
-	end
-	
-	--[[###DEBUG CODE###
 
-	love.graphics.print(love.timer.getFPS(),0,0)
-
-	--###DEBUG CODE###]]
-
-	--[[###DEBUG CODE###
-
-	local shift = 0
-	--if cache.debug then
-	for m,n in pairs(objectFileNames) do
-		--for k,v in pairs(n) do 
-			love.graphics.print(tostring(m).." : "..tostring(n),0,shift)
-			shift = shift + 20
-		--end
-	--end
-	end
-	--###DEBUG CODE###]]
+	DebugScreen()
 	
 	local timeNow = love.timer.getMicroTime()
 	if timePast <= timeNow then
@@ -150,9 +160,9 @@ function love.draw()
 	love.timer.sleep(timePast - timeNow)
 end
 
-function love.keypressed(key)
-	OnKeyPressScene(key)
-	DebugControl(key)
+function love.keypressed(key, uni)
+	OnKeyPressScene(key, uni)
+	DebugControl(key, uni)
 end
 
 function love.keyreleased(key)

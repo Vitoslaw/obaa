@@ -2,7 +2,7 @@ color = {}
 color.__index = color
 
 function color.new(r,g,b,a)
-	return setmetatable({["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a},color)
+	return setmetatable({["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or 0xff},color)
 end
 
 function ImageNew(data)
@@ -28,6 +28,8 @@ red255 = color.new(255,0,0,255)
 darkRed255 = color.new(0xE6,0x2E,0x2E)
 
 darkGray255 = color.new(0xBF,0xBF,0xBF)
+
+creamy255 = color.new(0xe5,0xe5,0xc5)
 
 graphicSchemes = {}
 images = {}

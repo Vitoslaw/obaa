@@ -7,18 +7,18 @@ function KeybindNew(press,pressM,release,releaseM)
 	return {		
 		press = press, release = release,
 		pressMouse = pressM, releaseMouse = releaseM,
-		onPress = function(self, key, x, y)
+		onPress = function(self, key, x, y, uni)
 			if x then
 				if self.keybind.pressMouse[key] then
 					self.keybind.pressMouse[key](self, x, y)
 				elseif self.keybind.pressMouse.any then
-					self.keybind.pressMouse.any(self, x, y)
+					self.keybind.pressMouse.any(self, x, y, key)
 				end
 			else
 				if self.keybind.press[key] then
 					self.keybind.press[key](self)
 				elseif self.keybind.press.any then
-					self.keybind.press.any(self)
+					self.keybind.press.any(self, key, uni)
 				end
 			end
 		end,
@@ -28,13 +28,13 @@ function KeybindNew(press,pressM,release,releaseM)
 				if self.keybind.releaseMouse[key] then
 					self.keybind.releaseMouse[key](self, x, y)
 				elseif self.keybind.releaseMouse.any then
-					self.keybind.releaseMouse.any(self, x, y)
+					self.keybind.releaseMouse.any(self, x, y, key)
 				end
 			else
 				if self.keybind.release[key] then
 					self.keybind.release[key](self)
 				elseif self.keybind.release.any then
-					self.keybind.release.any(self)
+					self.keybind.release.any(self, key)
 				end
 			end
 		end

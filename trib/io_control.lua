@@ -27,6 +27,7 @@ function LoadScenes(n)
 	if sceneFileNames[n] then
 		sceneName = sceneFileNames[n]:gsub(".lua","")
 		scenes[sceneName] = love.filesystem.load("saves/"..save.."/"..sceneFileNames[n])()
+		scenes[sceneName]:scaleObjects()
 	else
 		return true
 	end
@@ -70,17 +71,6 @@ end
 
 function SaveConfig()
 	love.filesystem.write("configuration.lua","--in order to rebind keys replace the word in quotemarks with name of key of desire \r\nkeybind = {	\r\n\tblock ="..keybind..",	\r\n\tdodge = \"s\",	\r\n\twalkLeft = \"a\",	\r\n\twalkRight = \"d\",	\r\n\tcutUp = \"up\",	\r\n\tcutDown = \"down\",	\r\n\tcutSide = \"left\",	\r\n\tpush = \"right\",	\r\n\tjump = \"shift\"}\r\n\r\ngravityConstant = 10\r\n\r\nscreenWidth = 1280\r\nscreenHeight = 720\r\nisFullscreen = true\r\nisVsync = false\r\nfsaa = 3",all)
-end
-
-function string.purify(self)
-	self = string.gsub(self,[["]],[[\"]])
-	self = string.gsub(self,[[
-
-]],[[\r\n]])
-	self = string.gsub(self,[[	]],[[\t]])
-	self = string.gsub(self,"%c","")
-	
-	return self
 end
 
 function KissCurrentMod()

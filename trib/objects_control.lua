@@ -4,12 +4,23 @@ object.__index = object
 
 function PoseNew(tab)
 	return {
+		name = tab.n,
+		font = tab.font,
+		scale = tab.s or 1,
+		rotate = tab.r or 0,
+	
 		takeDamage = tab.take,
 		dealDamage = tab.deal,
 		occupy = tab.occupy,
+		
+		quad = tab.quad,
 		image = tab.image,
+		
 		text = tab.text,
-		duration = tab.duration,
+		alignment = tab.alignment or "left",
+		limit = tab.limit or 640,
+		
+		duration = tab.duration or 0.1,
 		begin = tab.begin
 		}
 end
@@ -19,9 +30,51 @@ function object.new(tab)
 		tab.color = {r = 255, g = 255, b = 255,a = 255}
 	end
 	
+	if not tab.poses then
+		tab.poses = {}
+	end
+	
+	if not tab.pose then
+		tab.pose = tab.poses.default or {}
+	end
+	
+	if tab.x then
+		tab.x = tab.x * scale
+		tab.y = tab.y * scale
+	end
+	
 	return setmetatable(tab,object)
 end
 
+
+function object:swapPose(pose)
+	self.pose = pose
+	self.pose.begin = clock
+end
+
+function object:scale()
+	for name,pose in pairs(self.poses) do
+		if pose.occupy then
+			for k,v in ipairs(pose.occupy) do
+				if k%2 == 1 then
+					self.poses[name].occupy[k] = v * scale + xLetter /scale
+				else
+					self.poses[name].occupy[k] = v * scale + yLetter / scale
+				end
+			end
+		end
+	end
+	
+	if self.pose.occupy then
+		for k,v in pairs(self.pose.occupy) do
+			if k%2 == 1 then
+				self.pose.occupy[k] = v * scale + xLetter / scale
+			else
+				self.pose.occupy[k] = v * scale + yLetter / scale
+			end
+		end
+	end
+end
 
 
 function object:physics(elapsed)
