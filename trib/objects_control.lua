@@ -3,6 +3,16 @@ object.__index = object
 
 
 function PoseNew(tab)
+	if tab.occupy then
+		for k,v in ipairs(tab.occupy) do
+				if k%2 == 1 then
+					tab.occupy[k] = v * scale + xLetter /scale
+				else
+					tab.occupy[k] = v * scale + yLetter / scale
+				end
+		end
+	end
+	
 	return {
 		name = tab.n,
 		font = tab.font,
@@ -19,10 +29,23 @@ function PoseNew(tab)
 		text = tab.text,
 		alignment = tab.alignment or "left",
 		limit = tab.limit or 640,
+		xAlignment = tab.xAli,
 		
 		duration = tab.duration or 0.1,
 		begin = tab.begin
 		}
+end
+
+function QuadNew(w,h,image,...)
+	local tab = {}
+	
+	for i,row in pairs(arg) do
+		for  do	
+		
+		end
+	end
+	
+	return tab
 end
 
 function object.new(tab)
@@ -71,6 +94,30 @@ function object:scale()
 				self.pose.occupy[k] = v * scale + xLetter / scale
 			else
 				self.pose.occupy[k] = v * scale + yLetter / scale
+			end
+		end
+	end
+end
+
+function object:backscale()
+	for name,pose in pairs(self.poses) do
+		if pose.occupy then
+			for k,v in ipairs(pose.occupy) do
+				if k%2 == 1 then
+					self.poses[name].occupy[k] = (v - (xLetter /scale)) / scale
+				else
+					self.poses[name].occupy[k] = (v - (yLetter / scale)) / scale
+				end
+			end
+		end
+	end
+	
+	if self.pose.occupy then
+		for k,v in pairs(self.pose.occupy) do
+			if k%2 == 1 then
+				self.pose.occupy[k] = (v - (xLetter /scale)) / scale
+			else
+				self.pose.occupy[k] = (v - (yLetter / scale)) / scale
 			end
 		end
 	end

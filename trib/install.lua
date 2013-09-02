@@ -1,13 +1,5 @@
 function InstallData()
-	KissCurrentMod()
-	
-	loadstring(audioDatabase)()
-	loadstring(graphicsDatabase)()
-	loadstring(objectsDatabase)()
-	loadstring(scenesDatabase)()
-
-
-	--[[if not love.filesystem.exists("configuration.lua") then
+	if not love.filesystem.exists("configuration.lua") then
 		love.filesystem.write("configuration.lua",defaultConfig)
 	end
 	
@@ -47,5 +39,14 @@ function InstallData()
 
 	if not love.filesystem.exists("saves/default") then
 		SaveScenes("default")
-	end]]
+	end
+end
+
+function ExtractMode()
+	KissCurrentMod()
+	
+	loadstring(audioDatabase)()
+	loadstring(graphicsDatabase)()
+	loadstring(objectsDatabase)()
+	loadstring(scenesDatabase)()
 end

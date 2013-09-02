@@ -10,7 +10,7 @@ function string:purify()
 end
 
 function string:checkTable(b)
-	--local e, probe
+	local e, probe
 	
 	e = self:find(".%..",b or 1)
 	if e then

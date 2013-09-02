@@ -13,6 +13,14 @@ function scene:scaleObjects()
 	end
 end
 
+function scene:backscaleObjects()
+	for layer,objects in pairs(self.objects) do
+		for k,object in pairs(objects) do
+			object:backscale()
+		end
+	end
+end
+
 function scene:update(elapsed)
 	if self.objects then
 		for dumb, t in pairs(self.objects) do
@@ -22,14 +30,26 @@ function scene:update(elapsed)
 				end
 
 				if v.event then
-					v:event(elapsed)
+					v.event(v,elapsed)
 				end
+				
+				if cache.brek then
+					break
+				end
+			end
+
+			if cache.brek then
+				break
 			end
 		end
 	end
 	
 	if self.debug then
 		for k,v in pairs(self.debug) do
+			if cache.brek then
+				break
+			end
+			
 			if v.event then
 				v:event(elapsed)
 			end
@@ -102,10 +122,13 @@ function scene:onMouseRelease(key, x, y)
 end
 
 function scene:draw()
+	if not cache.brek then
+
 	if self.objects then
 		for layer,objects in pairs(self.objects) do
 			
 			love.graphics.push()
+			
 			
 			for k,v	in pairs(objects) do
 				love.graphics.setColor(v.color.r,v.color.g,v.color.b,v.color.a)
@@ -118,7 +141,19 @@ function scene:draw()
 							love.graphics.setFont(activeFont)
 						end
 						
-						love.graphics.printf(v.pose.text,v.x+xLetter,v.y+yLetter,v.pose.limit * scale,v.pose.alignment)
+						local y
+						
+						if v.pose.xAlignment then
+							if v.font then 
+								y = -font:getHeight()*scale/2 
+							else 
+								y = -activeFont:getHeight()*scale/2
+							end
+						else
+							y = 0
+						end
+						
+						love.graphics.printf(v.pose.text,v.x+xLetter,v.y+yLetter+y,v.pose.limit * scale,v.pose.alignment)
 					end
 
 					if v.pose.image then
@@ -163,6 +198,10 @@ function scene:draw()
 			end
 		end
 	end
+
+	else
+		cache.brek = false
+	end
 end
 
 
@@ -170,25 +209,25 @@ end
 
 
 function UpdateScene(elapsed)
-	scenes.activeScene:update(elapsed)
+	scenes[cache.activeScene]:update(elapsed)
 end
 
 function DrawScene()
-	scenes.activeScene:draw()
+	scenes[cache.activeScene]:draw()
 end
 
 function OnKeyPressScene(key, uni)
-	scenes.activeScene:onKeyPress(key, uni)
+	scenes[cache.activeScene]:onKeyPress(key, uni)
 end
 
 function OnKeyReleaseScene(key)
-	scenes.activeScene:onKeyRelease(key)
+	scenes[cache.activeScene]:onKeyRelease(key)
 end
 
 function OnMousePressScene(key, x, y)
-	scenes.activeScene:onMousePress(key, x, y)
+	activeScene:onMousePress(key, x, y)
 end
 
 function OnMouseReleaseScene(key, x, y)
-	scenes.activeScene:onMouseRelease(key, x, y)
+	activeScene:onMouseRelease(key, x, y)
 end

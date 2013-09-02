@@ -5,15 +5,18 @@ events = {
 		
 		
 		_toScene = function(sce,save)
+			cache.brek = true
+
 			cache.previousScene = cache.activeScene
 			
-			if save then 
-				--scenes[cache.activeScene] = scenes.activeScene
+			if not save then 
+				scenes[cache.activeScene] = cache.activeSceneData
 			end
+			
+			cache.activeSceneData = scenes[sce]
 
-			scenes.activeScene.debug = scene.new()
-			scenes.activeScene = scenes[sce]
-			--scenes.activeScene:scaleObjects()
+			activeScene = {}
+			activeScene = scenes[sce]
 			clock = 0
 			
 			cache.activeScene = sce
@@ -49,7 +52,7 @@ effects = {
 			elseif clock < inT then
 				self.color.a = 255 * (clock - start)/(inT - start)
 			elseif clock > outT then
-				self.color.a = 0
+				self.color.a = 1
 				self = nil
 			elseif clock > susT then
 				self.color.a = 255 * (outT - clock)/(outT - susT)
@@ -81,47 +84,51 @@ effects = {
 }
 
 eventSchemes = {
-	scrollButton = function(self)
-		local th = self
+	animation = function(self)
+		
+	end,
+
 	
-		scenes.activeScene.objects.l1.toolTip = nil
+	
+	scrollButton = function(th)
+		activeScene.objects.l1.toolTip = nil
 		
 		if ifHover(love.mouse.getX(),love.mouse.getY(),th) then
-			scenes.activeScene.objects.l1.toolTip = TooltipNew(self.metaButton.text)
+			activeScene.objects.l1.toolTip = TooltipNew(th.metaButton.text)
 			
-			if self.pose.begin + self.pose.duration < clock then
-				switch(self.pose.name,{
-				d = function() self:swapPose(self.poses.unroll1) end,
-				u1 = function() self:swapPose(self.poses.unroll2) end,
-				u2 = function() self:swapPose(self.poses.unroll3) end,
-				u3 = function() self:swapPose(self.poses.unroll4) end,
-				u4 = function() self:swapPose(self.poses.full1) end,
-				f1 = function() self:swapPose(self.poses.full2) end,
-				f2 = function() self:swapPose(self.poses.full3) end,
-				f3 = function() self:swapPose(self.poses.full4) end,
-				f4 = function() self:swapPose(self.poses.full5) end,
-				f5 = function() self:swapPose(self.poses.full6) end,
-				f6 = function() self:swapPose(self.poses.full7) end,
-				f7 = function() self:swapPose(self.poses.full2) end,
+			if th.pose.begin + th.pose.duration < clock then
+				switch(th.pose.name,{
+				d = function() th:swapPose(th.poses.unroll1) end,
+				u1 = function() th:swapPose(th.poses.unroll2) end,
+				u2 = function() th:swapPose(th.poses.unroll3) end,
+				u3 = function() th:swapPose(th.poses.unroll4) end,
+				u4 = function() th:swapPose(th.poses.full1) end,
+				f1 = function() th:swapPose(th.poses.full2) end,
+				f2 = function() th:swapPose(th.poses.full3) end,
+				f3 = function() th:swapPose(th.poses.full4) end,
+				f4 = function() th:swapPose(th.poses.full5) end,
+				f5 = function() th:swapPose(th.poses.full6) end,
+				f6 = function() th:swapPose(th.poses.full7) end,
+				f7 = function() th:swapPose(th.poses.full2) end,
 			
-				default = function() self:swapPose(self.poses.unroll1) end
+				default = function() th:swapPose(th.poses.unroll1) end
 				})()
 			end
 		else
-			if self.pose.begin + self.pose.duration < clock then
-				switch(self.pose.name,{
-				d = function() self:swapPose(self.poses.unroll1) end,
-				u2 = function() self:swapPose(self.poses.unroll1) end,
-				u3 = function() self:swapPose(self.poses.unroll2) end,
-				u4 = function() self:swapPose(self.poses.unroll3) end,
-				f1 = function() self:swapPose(self.poses.unroll4) end,
-				f2 = function() self:swapPose(self.poses.full3) end,
-				f3 = function() self:swapPose(self.poses.full4) end,
-				f4 = function() self:swapPose(self.poses.full5) end,
-				f5 = function() self:swapPose(self.poses.full6) end,
-				f6 = function() self:swapPose(self.poses.full1) end,
+			if th.pose.begin + th.pose.duration < clock then
+				switch(th.pose.name,{
+				d = function() th:swapPose(th.poses.unroll1) end,
+				u2 = function() th:swapPose(th.poses.unroll1) end,
+				u3 = function() th:swapPose(th.poses.unroll2) end,
+				u4 = function() th:swapPose(th.poses.unroll3) end,
+				f1 = function() th:swapPose(th.poses.unroll4) end,
+				f2 = function() th:swapPose(th.poses.full3) end,
+				f3 = function() th:swapPose(th.poses.full4) end,
+				f4 = function() th:swapPose(th.poses.full5) end,
+				f5 = function() th:swapPose(th.poses.full6) end,
+				f6 = function() th:swapPose(th.poses.full1) end,
 			
-				default = function() self:swapPose(self.poses.unroll1) end
+				default = function() th:swapPose(th.poses.unroll1) end
 				})()
 			end
 		end

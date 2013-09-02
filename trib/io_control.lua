@@ -27,7 +27,6 @@ function LoadScenes(n)
 	if sceneFileNames[n] then
 		sceneName = sceneFileNames[n]:gsub(".lua","")
 		scenes[sceneName] = love.filesystem.load("saves/"..save.."/"..sceneFileNames[n])()
-		scenes[sceneName]:scaleObjects()
 	else
 		return true
 	end

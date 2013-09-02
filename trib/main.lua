@@ -10,6 +10,7 @@ saving system;
 ]]
 
 function love.load()
+
 require "io_control"
 require "install"
 
@@ -39,7 +40,7 @@ require "input_control"
 	cache = {}
 	scenes = {}
 
---declaration
+--declarations
 	clockOn = true
 	clock = 0
 	
@@ -66,8 +67,10 @@ require "input_control"
 	spriteFileNames = love.filesystem.enumerate("resources/sprites_data")
 	
 	
---development	
-	InstallData()
+--development (chose one)
+	ExtractMode() --use files from userfolder
+	--InstallData()
+--/development
 	
 	dir = "resources/sprites/GUI/"
 	
@@ -78,7 +81,7 @@ require "input_control"
 	
 	scenes.loadingMaster = scene.new({l1 = false})
 	scenes.loadingMaster.objects = {l1 = {
-		backgrounColor = object.new({event = function() if clock < 5 then love.graphics.setBackgroundColor(0x34,0x5b,0x82) elseif clock < 10 then scenes.activeScene.objects.l1.loadingInfo.color = black255 love.graphics.setBackgroundColor(0xff,0xff,0xff) else love.graphics.setBackgroundColor(0,0,0) end end}),
+		backgrounColor = object.new({event = function() if clock < 5 then love.graphics.setBackgroundColor(0x34,0x5b,0x82) elseif clock < 10 then activeScene.objects.l1.loadingInfo.color = black255 love.graphics.setBackgroundColor(0xff,0xff,0xff) else love.graphics.setBackgroundColor(0,0,0) end end}),
 
 		logo1 = object.new({x = 260, y = 120, pose = PoseNew({image = ImageNew(dir.."RCP_logo.png")}), event = effects.fadeOut(0,2,3,5)}),
 		logo2 = object.new({x = 133, y = 120, pose = PoseNew({image = ImageNew(dir.."love_logo.png")}), event = effects.fadeOut(5,7,8,10)}),
@@ -120,10 +123,10 @@ require "input_control"
 		})
 	}}
 	
-	scenes.activeScene = scenes.loadingMaster
+	activeScene = scenes.loadingMaster
 	cache.activeScene = "loadingMaster"
 
---fps limit
+--fps limiter
 	step = 1 / FPSLimit or 1 / 60
 	timePast = love.timer.getMicroTime()
 end

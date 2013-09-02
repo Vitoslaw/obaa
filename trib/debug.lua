@@ -19,19 +19,19 @@ function DebugControl(key)
 				
 				cache.promptLog = {pointer = 1}
 				
-				scenes.activeScene.debug.dMsg = TextNew(0,180,"Console has been activated.","center",nil,effects.fadeOut(clock, clock + 1, clock + 2, clock + 3)) 
+				activeScene.debug.dMsg = TextNew(0,180,"Console has been activated.","center",nil,effects.fadeOut(clock, clock + 1, clock + 2, clock + 3)) 
 			end
 		end,
 		is = function() 
-			if scenes.activeScene.debug.console or not cache.consoleOpen then
+			if activeScene.debug.console or not cache.consoleOpen then
 				switch(key,{
 					f5 = function()
 						cache.consoleOpen = not cache.consoleOpen 
 					end,
 					["return"] = function() 
 						if cache.consoleOpen then 
-							scenes.activeScene.debug.console.pose.text = "" 
-						
+							activeScene.debug.console.pose.text = "" 
+					
 							cache.promptLog[#cache.promptLog + 1] = cache.consoleCommand
 							cache.promptLog.pointer = #cache.promptLog + 1
 					
@@ -40,10 +40,10 @@ function DebugControl(key)
 							local v2pos = cache.consoleCommand:find(" ", v1pos+1) or cache.consoleCommand:len()+1
 					
 							local command = cache.consoleCommand:sub(1,commandPos - 1)
-							local v1 = cache.consoleCommand:sub(commandPos + 1,v1pos -1)
-							local v2 = cache.consoleCommand:sub(v1pos + 1,v2pos -1)
+							local v1 = cache.consoleCommand:sub(commandPos + 1,v1pos - 1)
+							local v2 = cache.consoleCommand:sub(v1pos + 1,v2pos - 1)
 							local v3 = cache.consoleCommand:sub(v2pos + 1)
-										
+							
 							switch(command,consoleCommands)(v1,v2,v3)
 						end 
 					end,
@@ -52,7 +52,7 @@ function DebugControl(key)
 							cache.promptLog.pointer = cache.promptLog.pointer - 1
 					
 							if cache.promptLog.pointer > 0 then
-								scenes.activeScene.debug.console.pose.text = cache.promptLog[cache.promptLog.pointer]
+								activeScene.debug.console.pose.text = cache.promptLog[cache.promptLog.pointer]
 							else
 								cache.promptLog.pointer = 1
 							end
@@ -63,9 +63,9 @@ function DebugControl(key)
 							cache.promptLog.pointer = cache.promptLog.pointer + 1
 				
 							if cache.promptLog.pointer <= #cache.promptLog then
-								scenes.activeScene.debug.console.pose.text = cache.promptLog[cache.promptLog.pointer]
+								activeScene.debug.console.pose.text = cache.promptLog[cache.promptLog.pointer]
 							else
-								scenes.activeScene.debug.console.pose.text = ""
+								activeScene.debug.console.pose.text = ""
 								cache.promptLog.pointer = #cache.promptLog + 1
 							end
 						end
@@ -81,7 +81,7 @@ function DebugControl(key)
 				["f3"] = function() cache.stats = not cache.stats end,
 				["f4"] = function() if cache.showFPS then cache.showFPS = false cache.showTime = true elseif cache.showTime then cache.showTime = false else cache.showFPS = true end end,
 				["escape"] = function() if love.keyboard.isDown("lctrl") then events._quit() end end,
-				["r"] = function() if love.keyboard.isDown("lctrl") then cacheB = cache love.load() cache = cacheB end end
+				["r"] = function() if love.keyboard.isDown("lctrl") then cache.debug = nil cache.debugPointer = nil cacheB = cache love.load() cache = cacheB end end
 			})()
 		end
 end
@@ -91,8 +91,10 @@ function DebugScreen()
 	
 	if cache.stats then
 		if cache.debugPointer then
-			if loadstring("cache.debug ="..tostring(cache.debugPointer)) then
-				loadstring("cache.debug ="..tostring(cache.debugPointer))()
+			if cache.debugPointer:checkTable() then
+				if loadstring("cache.debug ="..tostring(cache.debugPointer)) then
+					loadstring("cache.debug ="..tostring(cache.debugPointer))()
+				end
 			end
 		end
 	
@@ -118,14 +120,14 @@ function DebugScreen()
 	
 	
 	if cache.consoleOpen then
-		if scenes.activeScene.debug then
-			if not scenes.activeScene.debug.console then
-				scenes.activeScene.debug.console = TextBoxNew(0,0,true)
+		if activeScene.debug then
+			if not activeScene.debug.console then
+				activeScene.debug.console = TextBoxNew(0,0,true)
 			end
-			cache.consoleCommand = scenes.activeScene.debug.console.pose.text
+			cache.consoleCommand = activeScene.debug.console.pose.text
 		end
 	else
-		scenes.activeScene.debug.console = nil
+		activeScene.debug.console = nil
 	end
 end
 
@@ -135,7 +137,7 @@ consoleCommands = {
 		if scenes[v1] then
 			events._toScene(v1) 
 		else 
-			scenes.activeScene.debug.dMsg = MessageBoxNew("Scene doesn't exists.")
+			activeScene.debug.dMsg = MessageBoxNew("Scene doesn't exists.")
 		end
 	end,
 	
@@ -145,9 +147,9 @@ consoleCommands = {
 		if v1 then
 			if string.checkTable(v1) then
 				loadstring("cache.debug ="..v1)()
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Value gotten.")
+				activeScene.debug.dMsg = MessageBoxNew("Value gotten.")
 			else
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Not valid value.")
+				activeScene.debug.dMsg = MessageBoxNew("Not valid value.")
 			end
 		end
 	end,
@@ -156,9 +158,9 @@ consoleCommands = {
 		if v1 then
 			if v1:checkTable() then
 				cache.debugPointer = v1
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Pointer set.")
+				activeScene.debug.dMsg = MessageBoxNew("Pointer set.")
 			else
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Not valid value.")
+				activeScene.debug.dMsg = MessageBoxNew("Not valid value.")
 			end
 		end
 	end,
@@ -166,9 +168,9 @@ consoleCommands = {
 	["/reload"] = function(v1)
 		if love.filesystem.exists(v1) then
 			love.filesystem.load(v1)()
-			scenes.activeScene.debug.dMsg = MessageBoxNew(v1.." reloaded")
+			activeScene.debug.dMsg = MessageBoxNew(v1.." reloaded")
 		else
-			scenes.activeScene.debug.dMsg = MessageBoxNew("File doesn't exists.")
+			activeScene.debug.dMsg = MessageBoxNew("File doesn't exists.")
 		end
 	end,
 	
@@ -187,12 +189,30 @@ consoleCommands = {
 		if v1 then
 			if loadstring(v1) then
 				loadstring(v1)()
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Executed successfully")
+				activeScene.debug.dMsg = MessageBoxNew("Executed successfully")
 			else
-				scenes.activeScene.debug.dMsg = MessageBoxNew("Operation denied")
+				activeScene.debug.dMsg = MessageBoxNew("Operation denied")
 			end
 		end
 	end,
 	
-	default = function() scenes.activeScene.debug.dMsg = TextNew(0,180,"Not valid command.","center",nil,effects.fadeOut(clock, clock + 1, clock + 2, clock + 3)) end
+	["/setvalue"] = function(v1,v2)
+		if v1:checkTable() then
+			if v2 ~= "nil" then
+				if v2:checkTable() then
+					loadstring(v1.." = "..v2)()
+					activeScene.debug.dMsg = MessageBoxNew(v1.." = "..v2)
+				else
+					activeScene.debug.dMsg = MessageBoxNew("Second value invalid")
+				end
+			else
+				loadstring(v1.." = nil")()
+				activeScene.debug.dMsg = MessageBoxNew(v1.." = nil")
+			end
+		else
+			activeScene.debug.dMsg = MessageBoxNew("First value invalid")
+		end
+	end,
+	
+	default = function() activeScene.debug.dMsg = TextNew(0,180,"Not valid command.","center",nil,effects.fadeOut(clock, clock + 1, clock + 2, clock + 3)) end
 }
